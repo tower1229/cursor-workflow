@@ -1,4 +1,4 @@
-# AI Environment
+# Cursor Config
 
 Shared Cursor IDE configuration files for cross-project reuse.
 
@@ -23,7 +23,7 @@ Add this repository as a submodule in your project's `.cursor` directory:
 
 ```bash
 # Add submodule
-git submodule add https://github.com/tower1229/ai-env.git .cursor
+git submodule add git@github.com:tower1229/cursor-config.git .cursor
 
 # Initialize (for cloned projects)
 git submodule update --init --recursive
