@@ -1,0 +1,249 @@
+---
+description: Coding Standards
+alwaysApply: true
+---
+
+# 开发规范与编码标准
+
+## 🏆 核心原则
+
+### 1. 约定大于配置 (Convention over Configuration)
+
+优先使用框架和库的默认约定，避免过度自定义配置。
+
+**架构设计最小配置原则**：
+
+- 理想状态下开发者无需传入任何配置即可运行在"最佳配置"
+- 只暴露确实必要的配置选项，隐藏技术实现细节
+- 提供合理的默认值，让 80% 的使用场景开箱即用
+- 配置项应该是业务需求驱动，而非技术实现驱动
+
+```typescript
+// ❌ BAD: 过度配置
+function createApiClient(config: {
+  baseUrl?: string;
+  timeout?: number;
+  retries?: number;
+  headers?: Record<string, string>;
+  interceptors?: Array<Function>;
+  // ... 20+ 配置项
+}) {}
+
+// ✅ GOOD: 最小配置，合理默认值
+function createApiClient(baseUrl: string, options?: { timeout?: number }) {
+  return {
+    baseUrl,
+    timeout: options?.timeout ?? 5000,
+    // 其他配置使用框架默认值
+  };
+}
+```
+
+### 2. 保持代码精简 (Keep It Simple)
+
+- **拒绝过度设计**：不要为了"未来可能的需求"而添加复杂抽象
+- **单一职责原则**：每个函数、组件只做一件事
+- **删除死代码**：及时清理不用的代码、注释和依赖
+- **避免深层嵌套**：超过 3 层嵌套时考虑重构
+
+```typescript
+// ❌ BAD: 过度抽象
+class AbstractDataProcessorFactory {
+  createProcessor(type: string): Processor {
+    return new ProcessorBuilder()
+      .withStrategy(this.getStrategy(type))
+      .withValidator(this.getValidator(type))
+      .build();
+  }
+}
+
+// ✅ GOOD: 简单直接
+function processData(data: unknown, type: string): ProcessedData {
+  if (type === "user") return processUserData(data);
+  if (type === "order") return processOrderData(data);
+  throw new Error(`Unknown type: ${type}`);
+}
+```
+
+### 3. 类型安全优先 (Type Safety First)
+
+- **避免 `any` 类型**：使用具体类型或 `unknown`
+- **避免类型断言**：优先使用类型守卫和类型推导
+- **利用类型推导**：让 TypeScript 自动推导类型，减少冗余标注
+
+```typescript
+// ❌ BAD
+function parseData(data: any): any {
+  return JSON.parse(data);
+}
+
+// ✅ GOOD
+function parseData<T>(data: string): T {
+  return JSON.parse(data) as T;
+}
+
+// ✅ BETTER: 使用类型守卫
+function isUserData(data: unknown): data is UserData {
+  return (
+    typeof data === "object" && data !== null && "id" in data && "name" in data
+  );
+}
+```
+
+### 4. 尽早报错退出 (Fail Fast Principle)
+
+- **参数校验在函数开头**：不符合预期立即抛出错误
+- **避免兜底逻辑**：不要默默处理错误情况
+- **明确的错误信息**：错误要说明原因和解决方案
+
+```typescript
+// ❌ BAD: 静默失败
+function divide(a: number, b: number): number {
+  if (b === 0) return 0; // 静默返回错误值
+  return a / b;
+}
+
+// ✅ GOOD: 立即报错
+function divide(a: number, b: number): number {
+  if (b === 0) {
+    throw new Error("Division by zero: denominator cannot be 0");
+  }
+  return a / b;
+}
+```
+
+### 5. 重构时保持简洁 (Clean Refactoring)
+
+- **删除旧代码**：重构时完全移除被替换的代码
+- **不做兼容层**：避免为了向后兼容而保留旧接口
+- **不做降级逻辑**：新功能就用新方式，不要混合新旧实现
+- **一次性迁移**：完整重构而不是渐进式兼容
+
+```typescript
+// ❌ BAD: 保留旧代码和兼容层
+function oldFormatDate(date: Date): string {
+  // 旧实现
+}
+function newFormatDate(date: Date): string {
+  // 新实现
+}
+function formatDate(date: Date, useOld?: boolean): string {
+  return useOld ? oldFormatDate(date) : newFormatDate(date);
+}
+
+// ✅ GOOD: 完全替换
+function formatDate(date: Date): string {
+  // 新实现，旧代码已删除
+}
+```
+
+### 6. 完整实现需求 (Complete Implementation Required)
+
+**禁止占位实现**：
+
+- 不允许使用 `TODO`、`FIXME`、`XXX` 等注释占位符
+- 不允许使用假数据、硬编码或模拟响应作为最终实现
+- 不允许标注"待实现"、"后续补充"、"临时方案"等延期说明
+
+**必须完整实现**：
+
+- 所有需求点必须提供完整、可用的实现代码
+- 实现必须基于真实的业务需求，不能基于假设
+- 使用正确、直接的方式解决问题，避免 hack 手段
+- 实现后的代码应该可以直接使用，无需二次开发补充
+
+```typescript
+// ❌ BAD: 占位实现
+function fetchUserData(id: string) {
+  // TODO: 实现真实 API 调用
+  return { id, name: "Mock User" };
+}
+
+// ✅ GOOD: 完整实现
+async function fetchUserData(id: string): Promise<UserData> {
+  const response = await fetch(`/api/users/${id}`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch user: ${response.statusText}`);
+  }
+  return response.json();
+}
+```
+
+### 7. 复用优先原则 (Reuse First)
+
+- **全局搜索已有实现**：开发前先搜索相似功能
+- **扩展现有工具**：优先扩展而不是重新创建
+- **统一的工具函数**：相同功能使用相同的工具
+- **共享类型定义**：避免重复定义相同的类型
+
+```typescript
+// ❌ BAD: 重复实现
+function formatDate1(date: Date): string {
+  return date.toISOString().split("T")[0];
+}
+function formatDate2(date: Date): string {
+  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+}
+
+// ✅ GOOD: 复用统一工具
+import { formatDate } from "@/utils/date";
+// 所有地方使用同一个 formatDate 函数
+```
+
+### 8. 合理组织文件 (Reasonable File Organization)
+
+- **按功能分组**：相关功能放在一起
+- **避免过深嵌套**：不超过 3 层目录
+- **使用索引文件**：统一导出模块内容
+- **保持文件整洁**：每个文件不超过 500 行
+
+```
+src/
+├── components/
+│   ├── user/
+│   │   ├── UserProfile.tsx
+│   │   ├── UserList.tsx
+│   │   └── index.ts          # 统一导出
+├── utils/
+│   ├── date.ts
+│   └── format.ts
+└── types/
+    └── user.types.ts
+```
+
+### 9. 命名约定 (Naming Conventions)
+
+**文件命名**：
+
+- React 组件：`PascalCase.tsx`（如 `UserProfile.tsx`）
+- Hooks：`use-kebab-case.ts`（如 `use-auth.ts`）
+- 工具函数：`kebab-case.ts`（如 `format-date.ts`）
+- 类型定义：`kebab-case.types.ts`
+
+**代码命名**：
+
+- 组件/类：`PascalCase`
+- 函数/变量：`camelCase`
+- 常量：`UPPER_SNAKE_CASE`
+- Props 类型：`{ComponentName}Props`
+- 事件处理器：`handle` 前缀（如 `handleClick`）
+
+```typescript
+// ✅ GOOD: 符合命名约定
+const MAX_RETRY_COUNT = 3;
+
+interface UserProfileProps {
+  userId: string;
+  onUpdate?: (user: User) => void;
+}
+
+function UserProfile({ userId, onUpdate }: UserProfileProps) {
+  const handleClick = () => {
+    // ...
+  };
+}
+```
+
+---
+
+> **记住**：简单、直接、安全。这三个词概括了我们所有的开发原则。

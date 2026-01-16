@@ -14,7 +14,7 @@ Shared Cursor IDE configuration files for cross-project reuse.
 │   └── unit-test.md       # Unit testing
 ├── rules/              # Cursor rules (context files)
 │   ├── daisyui.mdc                    # daisyUI 5 reference
-│   ├── development-specifications.mdc # Development standards
+│   ├── coding-standards.mdc           # Coding standards
 │   └── RIPERsigma-lite.mdc           # RIPER workflow framework
 ├── scripts/            # Setup scripts
 │   ├── sync-cursor-rules.ts  # TypeScript sync script (recommended)
@@ -179,7 +179,7 @@ You should see output like:
 
 ```
 ✅ Linked: daisyui.mdc
-✅ Linked: development-specifications.mdc
+✅ Linked: coding-standards.mdc
 ✅ Linked: RIPERsigma-lite.mdc
 
 📊 Summary: 3 linked, 0 skipped
@@ -197,7 +197,7 @@ You should see entries like:
 
 ```
 lrwxr-xr-x  ... daisyui.mdc -> ../shared/rules/daisyui.mdc
-lrwxr-xr-x  ... development-specifications.mdc -> ../shared/rules/development-specifications.mdc
+lrwxr-xr-x  ... coding-standards.mdc -> ../shared/rules/coding-standards.mdc
 lrwxr-xr-x  ... RIPERsigma-lite.mdc -> ../shared/rules/RIPERsigma-lite.mdc
 ```
 
@@ -321,7 +321,7 @@ your-project/
 │   └── shared/                   # Git submodule (cursor-config)
 │       ├── rules/
 │       │   ├── daisyui.mdc
-│       │   ├── development-specifications.mdc
+│       │   ├── coding-standards.mdc
 │       │   └── RIPERsigma-lite.mdc
 │       └── commands/
 ├── scripts/

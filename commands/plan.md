@@ -86,7 +86,7 @@
 | API 端点       | ✅ 即时测试       |
 | UI 组件        | ⏳ 可延迟批量测试 |
 
-> 开发规范参考 `.cursor/rules/development-specifications.mdc`
+> 开发规范参考 `.cursor/rules/coding-standards.mdc`
 
 ### 第六步：集成验收
 
