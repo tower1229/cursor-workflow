@@ -14,7 +14,7 @@ function syncCursorRules() {
   // 检查共享规则目录是否存在
   if (!existsSync(SHARED_RULES_DIR)) {
     console.warn(`⚠️  Shared rules directory ${SHARED_RULES_DIR} does not exist`);
-    console.log("💡 Run: git submodule add git@github.com:tower1229/cursor-config.git .cursor/shared");
+    console.log("💡 Run: git submodule add git@github.com:tower1229/cursor-workflow.git .cursor/shared");
     return;
   }
 

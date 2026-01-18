@@ -6,7 +6,7 @@ SHARED_RULES_DIR=".cursor/shared/rules"
 # Check if shared rules directory exists
 if [ ! -d "$SHARED_RULES_DIR" ]; then
   echo "⚠️  Shared rules directory does not exist"
-  echo "💡 Run: git submodule add git@github.com:tower1229/cursor-config.git .cursor/shared"
+  echo "💡 Run: git submodule add git@github.com:tower1229/cursor-workflow.git .cursor/shared"
   exit 0
 fi
 

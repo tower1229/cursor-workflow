@@ -1,4 +1,4 @@
-# Cursor Config
+# Cursor Workflow
 
 Shared Cursor IDE configuration files for cross-project reuse.
 
@@ -24,7 +24,7 @@ Shared Cursor IDE configuration files for cross-project reuse.
 
 ## Recommended Setup: Git Submodule + Auto-Sync Script
 
-This is the recommended approach for using cursor-config in your projects. It allows you to:
+This is the recommended approach for using cursor-workflow in your projects. It allows you to:
 
 - Keep shared rules separate from project-specific rules
 - Automatically sync rules via symbolic links
@@ -40,7 +40,7 @@ Add this repository as a submodule in your project's `.cursor/shared` directory:
 cd /path/to/your-project
 
 # Add submodule
-git submodule add git@github.com:tower1229/cursor-config.git .cursor/shared
+git submodule add git@github.com:tower1229/cursor-workflow.git .cursor/shared
 
 # Initialize submodule (if needed)
 git submodule update --init --recursive
@@ -89,7 +89,7 @@ function syncCursorRules() {
       `⚠️  Shared rules directory ${SHARED_RULES_DIR} does not exist`
     );
     console.log(
-      "💡 Run: git submodule add git@github.com:tower1229/cursor-config.git .cursor/shared"
+      "💡 Run: git submodule add git@github.com:tower1229/cursor-workflow.git .cursor/shared"
     );
     return;
   }
@@ -263,7 +263,7 @@ SHARED_RULES_DIR=".cursor/shared/rules"
 # Check if shared rules directory exists
 if [ ! -d "$SHARED_RULES_DIR" ]; then
   echo "⚠️  Shared rules directory does not exist"
-  echo "💡 Run: git submodule add git@github.com:tower1229/cursor-config.git .cursor/shared"
+  echo "💡 Run: git submodule add git@github.com:tower1229/cursor-workflow.git .cursor/shared"
   exit 0
 fi
 
@@ -318,7 +318,7 @@ your-project/
 │   │   ├── daisyui.mdc -> ../shared/rules/daisyui.mdc
 │   │   └── ...
 │   ├── commands/                 # Your project-specific commands
-│   └── shared/                   # Git submodule (cursor-config)
+│   └── shared/                   # Git submodule (cursor-workflow)
 │       ├── rules/
 │       │   ├── daisyui.mdc
 │       │   ├── coding-standards.mdc
